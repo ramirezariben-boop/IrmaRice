@@ -46,8 +46,9 @@
 
 input {
   width: 70px;
-  height: 32px;        /* 👈 clave */
-  padding: 0 6px;      /* padding horizontal solamente */
+  height: 32px;
+  line-height: 32px;     /* 👈 CLAVE */
+  padding: 0 6px;
   font-size: 16px;
   text-align: right;
 }
@@ -196,12 +197,26 @@ async function actualizar() {
     });
 
     const data = await res.json();
-    mostrarTexto(data.texto);
+
+    if (data.texto) {
+      mostrarTexto(data.texto);
+    }
+
+    limpiarInputs(); // 👈 aquí se limpian los textbox
 
   } catch {
     alert("Error al registrar la actualización");
   }
 }
+
+
+  function limpiarInputs() {
+  arrozRojo.value = "";
+  arrozBlanco.value = "";
+  frijoles.value = "";
+  spaghetti.value = "";
+}
+
 
 async function generarTicket() {
   try {
