@@ -354,7 +354,7 @@ function formatearTicketFrontend(raw) {
   const ancho = Math.max(...formateadas.map(l => l.length));
 
   // 3) Línea de guiones dinámica
-  const guiones = "—".repeat(ancho);
+  const guiones = "-".repeat(ancho);
 
   // 4) Reemplazar separadores y alinear TOTAL
   return formateadas.map(l => {
@@ -362,10 +362,15 @@ function formatearTicketFrontend(raw) {
       return guiones;
     }
 
-    if (l.startsWith("TOTAL")) {
-      const [, precio] = l.split("$");
-      return "TOTAL".padEnd(ancho - precio.length - 1) + "$" + precio;
-    }
+if (l.startsWith("TOTAL")) {
+  const precio = l.slice(l.lastIndexOf("$") + 1);
+  return (
+    "TOTAL".padEnd(ancho - precio.length - 2) +
+    "$ " +
+    precio
+  );
+}
+
 
     return l;
   }).join("\n");
