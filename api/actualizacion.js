@@ -33,17 +33,26 @@ export default async function handler(req, res) {
       [fechaMX, arrozRojo, arrozBlanco, frijoles, spaghetti]
     );
 
-    // ✍️ Generar texto automático
-    const partes = [];
-    if (arrozBlanco !== 0) partes.push(`${arrozBlanco} blancos`);
-    if (arrozRojo !== 0) partes.push(`${arrozRojo} rojos`);
-    if (frijoles !== 0) partes.push(`${frijoles} frijoles`);
-    if (spaghetti !== 0) partes.push(`${spaghetti} spaghettis`);
+    // 🧠 Detectar si hay alguna ENTREGA (valor positivo)
+    const hayEntrega =
+      arrozRojo > 0 ||
+      arrozBlanco > 0 ||
+      frijoles > 0 ||
+      spaghetti > 0;
 
-    const texto =
-      partes.length > 0
-        ? `Entregué ${partes.join(", ")}`
-        : "Actualización registrada (sin cambios)";
+    // Si no hubo entrega (solo sobrantes o ceros), no generar texto
+    if (!hayEntrega) {
+      return res.status(200).json({ texto: "" });
+    }
+
+    // ✍️ Generar texto solo para entregas
+    const partes = [];
+    if (arrozBlanco > 0) partes.push(`${arrozBlanco} blancos`);
+    if (arrozRojo > 0) partes.push(`${arrozRojo} rojos`);
+    if (frijoles > 0) partes.push(`${frijoles} frijoles`);
+    if (spaghetti > 0) partes.push(`${spaghetti} spaghettis`);
+
+    const texto = `Entregué ${partes.join(", ")}`;
 
     return res.status(200).json({ texto });
 
