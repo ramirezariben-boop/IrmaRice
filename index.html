@@ -382,22 +382,7 @@ async function mostrarTexto(texto) {
 
   await copiarAlPortapapeles(formateado);
 }
-
-
-
-  // Ancho real del ticket (línea más larga)
-  const ancho = Math.max(...formateadas.map(l => l.length));
-
-  // Guiones dinámicos
-  const guiones = "—".repeat(ancho);
-
-  return formateadas.map(l => {
-    if (/^-{3,}$/.test(l.trim())) return guiones;
-    return l;
-  }).join("\n");
-}
-
-
+  
   function limpiarInputs() {
     el("arrozRojo").value = "";
     el("arrozBlanco").value = "";
