@@ -102,8 +102,12 @@ export default async function handler(req, res) {
 
     return res.status(200).json({ texto });
 
-  } catch (error) {
-    console.error("Error en /api/ticket:", error);
-    return res.status(500).json({ error: "Error al generar el ticket" });
-  }
+} catch (error) {
+  console.error("Error en /api/ticket:", error);
+  return res.status(500).json({
+    error: "Error al generar el ticket",
+    detalle: error.message,
+  });
+}
+
 }
