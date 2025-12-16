@@ -173,6 +173,13 @@
     .lockBox button {
       width: 100%;
     }
+
+#resultado {
+  font-family: "Courier New", Courier, monospace;
+  white-space: pre;
+}
+
+
   </style>
 </head>
 
@@ -319,14 +326,77 @@
       }
     }
   }
+  
+function formatearTicketFrontend(raw) {
+  const lineas = raw.split("\n");
 
-  async function mostrarTexto(texto) {
-    const out = el("resultado");
-    out.value = texto || "";
-    out.style.height = "auto";
-    out.style.height = out.scrollHeight + "px";
-    if (texto) await copiarAlPortapapeles(texto);
-  }
+  // 1) Formatear líneas de productos
+  const formateadas = lineas.map(linea => {
+    if (!linea.includes("x") || !linea.includes("$")) {
+      return linea;
+    }
+
+    const match = linea.match(/^(.*?)\s+x(\d+)\s+\$(.+)$/);
+    if (!match) return linea;
+
+    const [, nombre, cantidad, precio] = match;
+
+    return (
+      nombre.trim().padEnd(16) +
+      " x" +
+      cantidad.padStart(3) +
+      "   $" +
+      precio.padStart(8)
+    );
+  });
+
+  // 2) Calcular ancho máximo
+  const ancho = Math.max(...formateadas.map(l => l.length));
+
+  // 3) Línea de guiones dinámica
+  const guiones = "—".repeat(ancho);
+
+  // 4) Reemplazar separadores y alinear TOTAL
+  return formateadas.map(l => {
+    if (/^-{3,}$/.test(l.trim())) {
+      return guiones;
+    }
+
+    if (l.startsWith("TOTAL")) {
+      const [, precio] = l.split("$");
+      return "TOTAL".padEnd(ancho - precio.length - 1) + "$" + precio;
+    }
+
+    return l;
+  }).join("\n");
+}
+  
+async function mostrarTexto(texto) {
+  const out = el("resultado");
+
+  const formateado = formatearTicketFrontend(texto);
+
+  out.value = formateado;
+  out.style.height = "auto";
+  out.style.height = out.scrollHeight + "px";
+
+  await copiarAlPortapapeles(formateado);
+}
+
+
+
+  // Ancho real del ticket (línea más larga)
+  const ancho = Math.max(...formateadas.map(l => l.length));
+
+  // Guiones dinámicos
+  const guiones = "—".repeat(ancho);
+
+  return formateadas.map(l => {
+    if (/^-{3,}$/.test(l.trim())) return guiones;
+    return l;
+  }).join("\n");
+}
+
 
   function limpiarInputs() {
     el("arrozRojo").value = "";
