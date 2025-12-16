@@ -63,15 +63,19 @@ input {
 }
 
 
-    .counter button {
-      width: 32px;
-      height: 32px;
-      padding: 0;
-      font-size: 18px;
-      font-weight: bold;
-      border-radius: 4px;
-      background: #e0c27a;
-    }
+.counter button {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: flex;                 /* 👈 CLAVE */
+  align-items: center;           /* 👈 CLAVE */
+  justify-content: center;       /* 👈 CLAVE */
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 4px;
+  background: #e0c27a;
+}
+
 
     .counter button:hover {
       background: #cfa45d;
