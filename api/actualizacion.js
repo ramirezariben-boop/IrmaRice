@@ -4,6 +4,13 @@ const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
 });
 
+function formatearCantidad(cantidad, singular, plural) {
+  return cantidad === 1
+    ? `1 ${singular}`
+    : `${cantidad} ${plural}`;
+}
+
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Método no permitido" });
@@ -46,11 +53,20 @@ export default async function handler(req, res) {
     }
 
     // ✍️ Generar texto solo para entregas
-    const partes = [];
-    if (arrozBlanco > 0) partes.push(`${arrozBlanco} blancos`);
-    if (arrozRojo > 0) partes.push(`${arrozRojo} rojos`);
-    if (frijoles > 0) partes.push(`${frijoles} frijoles`);
-    if (spaghetti > 0) partes.push(`${spaghetti} spaghettis`);
+const partes = [];
+
+if (arrozBlanco > 0)
+  partes.push(formatearCantidad(arrozBlanco, "blanco", "blancos"));
+
+if (arrozRojo > 0)
+  partes.push(formatearCantidad(arrozRojo, "rojo", "rojos"));
+
+if (frijoles > 0)
+  partes.push(formatearCantidad(frijoles, "frijol", "frijoles"));
+
+if (spaghetti > 0)
+  partes.push(formatearCantidad(spaghetti, "spaghetti", "spaghettis"));
+
 
     const texto = `Entregué ${partes.join(", ")}`;
 
