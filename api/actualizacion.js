@@ -5,10 +5,12 @@ const pool = new Pool({
 });
 
 function formatearCantidad(cantidad, singular, plural) {
-  return cantidad === 1
+  const abs = Math.abs(cantidad);
+  return abs === 1
     ? `1 ${singular}`
-    : `${cantidad} ${plural}`;
+    : `${abs} ${plural}`;
 }
+
 
 
 export default async function handler(req, res) {
@@ -47,30 +49,56 @@ export default async function handler(req, res) {
       frijoles > 0 ||
       spaghetti > 0;
 
-    // Si no hubo entrega (solo sobrantes o ceros), no generar texto
-    if (!hayEntrega) {
-      return res.status(200).json({ texto: "" });
-    }
+    const haySobrante =
+      arrozRojo < 0 ||
+      arrozBlanco < 0 ||
+      frijoles < 0 ||
+      spaghetti < 0;
 
-    // ✍️ Generar texto solo para entregas
-const partes = [];
+// 🟢 CASO 1: ENTREGA
+if (hayEntrega) {
+  const partes = [];
 
-if (arrozBlanco > 0)
-  partes.push(formatearCantidad(arrozBlanco, "blanco", "blancos"));
+  if (arrozBlanco > 0)
+    partes.push(formatearCantidad(arrozBlanco, "blanco", "blancos"));
 
-if (arrozRojo > 0)
-  partes.push(formatearCantidad(arrozRojo, "rojo", "rojos"));
+  if (arrozRojo > 0)
+    partes.push(formatearCantidad(arrozRojo, "rojo", "rojos"));
 
-if (frijoles > 0)
-  partes.push(formatearCantidad(frijoles, "frijol", "frijoles"));
+  if (frijoles > 0)
+    partes.push(formatearCantidad(frijoles, "frijol", "frijoles"));
 
-if (spaghetti > 0)
-  partes.push(formatearCantidad(spaghetti, "spaghetti", "spaghettis"));
+  if (spaghetti > 0)
+    partes.push(formatearCantidad(spaghetti, "spaghetti", "spaghettis"));
 
+  return res.status(200).json({
+    texto: `Entregué ${partes.join(", ")}`
+  });
+}
 
-    const texto = `Entregué ${partes.join(", ")}`;
+// 🟠 CASO 2: SOBRANTE (solo negativos)
+if (haySobrante) {
+  const partes = [];
 
-    return res.status(200).json({ texto });
+  if (arrozBlanco < 0)
+    partes.push(formatearCantidad(arrozBlanco, "blanco", "blancos"));
+
+  if (arrozRojo < 0)
+    partes.push(formatearCantidad(arrozRojo, "rojo", "rojos"));
+
+  if (frijoles < 0)
+    partes.push(formatearCantidad(frijoles, "frijol", "frijoles"));
+
+  if (spaghetti < 0)
+    partes.push(formatearCantidad(spaghetti, "spaghetti", "spaghettis"));
+
+  return res.status(200).json({
+    texto: `Sobró ${partes.join(", ")}`
+  });
+}
+
+// ⚪ CASO 3: todo es 0
+return res.status(200).json({ texto: "" });
 
   } catch (error) {
     console.error("Error en /api/actualizacion:", error);
