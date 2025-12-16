@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>IrmaRice · Registro diario</title>
 
   <style>
@@ -31,57 +32,66 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 12px;
+      gap: 10px;
     }
 
     label {
       font-weight: bold;
       flex: 1;
+      user-select: none;
     }
 
     /* ===== CONTADOR (-  input  +) ===== */
+    .counter {
+      display: grid;
+      grid-template-columns: 32px 70px 32px;
+      align-items: center;
+      gap: 6px;
+    }
 
-.counter {
-  display: grid;
-  grid-template-columns: 32px 70px 32px;
-  align-items: center;
-  gap: 6px;
-}
+    .counter input {
+      width: 70px;
+      height: 32px;
+      padding: 0 6px;
+      font-size: 16px;
+      text-align: right;
+      box-sizing: border-box;
+      border: 2px solid #3a2f1c;
+      background: #fff;
+      outline: none;
+    }
 
-.counter input {
-  width: 70px;
-  height: 32px;
-  padding: 0 6px;
-  font-size: 16px;
-  text-align: right;
-  box-sizing: border-box;
-  border: 2px solid #3a2f1c;
-}
+    .counter input:focus {
+      box-shadow: 0 0 0 3px rgba(207,164,93,0.35);
+    }
 
-.counter input[type="number"] {
-  appearance: none;
-  -moz-appearance: textfield;
-}
+    .counter input[type="number"] {
+      appearance: none;
+      -moz-appearance: textfield;
+    }
 
-.counter button {
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  font-size: 18px;
-  font-weight: bold;
-  border-radius: 4px;
-  background: #e0c27a;
-  border: 2px solid transparent;
-}
-
+    .counter button {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 4px;
+      background: #e0c27a;
+      border: 2px solid transparent;
+      cursor: pointer;
+      user-select: none;
+    }
 
     .counter button:hover {
       background: #cfa45d;
     }
 
-    button {
+    /* Botones grandes (actualización / ticket / login) */
+    button.action {
       width: 100%;
       margin-top: 12px;
       padding: 12px;
@@ -93,7 +103,7 @@
       cursor: pointer;
     }
 
-    button:hover {
+    button.action:hover {
       background: #b98f4e;
     }
 
@@ -105,14 +115,10 @@
       resize: none;
       overflow: hidden;
       min-height: 120px;
-    }
-
-    input,
-      textarea,
-      button {
       box-sizing: border-box;
+      border: 2px solid #3a2f1c;
+      background: #fff;
     }
-
 
     .note {
       font-size: 12px;
@@ -122,107 +128,109 @@
     }
 
     /* 🔒 Overlay de seguridad */
-#lockOverlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(6px); /* 👈 BLUR real */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-}
+    #lockOverlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
 
-/* Caja del login */
-.lockBox {
-  background: #fff7e1;
-  padding: 25px 30px;
-  border-radius: 10px;
-  text-align: center;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-}
+    /* Caja del login */
+    .lockBox {
+      width: min(360px, 92vw);
+      background: #fff7e1;
+      padding: 25px 30px;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      border: 2px solid rgba(58,47,28,0.25);
+    }
 
-.lockBox h3 {
-  margin-bottom: 15px;
-}
+    .lockBox h3 {
+      margin-bottom: 15px;
+    }
 
-.lockBox input {
-  width: 100%;
-  padding: 8px;
-  font-size: 16px;
-  margin-bottom: 12px;
-}
+    .lockBox input {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      margin-bottom: 12px;
+      border: 2px solid #3a2f1c;
+      border-radius: 6px;
+      box-sizing: border-box;
+      outline: none;
+      background: #fff;
+    }
 
-.lockBox button {
-  width: 100%;
-}
+    .lockBox input:focus {
+      box-shadow: 0 0 0 3px rgba(207,164,93,0.35);
+    }
 
+    .lockBox button {
+      width: 100%;
+    }
   </style>
 </head>
 
 <body>
 
 <!-- 🔒 Pantalla de bloqueo -->
-<div id="lockOverlay">
+<div id="lockOverlay" aria-modal="true" role="dialog">
   <div class="lockBox">
     <h3>🔒 Acceso protegido</h3>
-    <input
-      id="passwordInput"
-      type="password"
-      placeholder="Contraseña"
-      autofocus
-    />
-    <button onclick="checkPassword()">Entrar</button>
+    <input id="passwordInput" type="password" placeholder="Contraseña" autocomplete="current-password" />
+    <button class="action" type="button" onclick="checkPassword()">Entrar</button>
   </div>
 </div>
 
-  
 <div class="container">
   <h2>🍚 IrmaRice · Registro diario</h2>
 
   <div class="row">
-    <label>🍘 Arroz rojo</label>
+    <label for="arrozRojo">🍘 Arroz rojo</label>
     <div class="counter">
-      <button onclick="cambiarValor('arrozRojo', -1)">−</button>
-      <input id="arrozRojo" type="number">
-      <button onclick="cambiarValor('arrozRojo', 1)">+</button>
+      <button type="button" onclick="cambiarValor('arrozRojo', -1)">−</button>
+      <input id="arrozRojo" type="number" inputmode="numeric" />
+      <button type="button" onclick="cambiarValor('arrozRojo', 1)">+</button>
     </div>
   </div>
 
   <div class="row">
-    <label>🍚 Arroz blanco</label>
+    <label for="arrozBlanco">🍚 Arroz blanco</label>
     <div class="counter">
-      <button onclick="cambiarValor('arrozBlanco', -1)">−</button>
-      <input id="arrozBlanco" type="number">
-      <button onclick="cambiarValor('arrozBlanco', 1)">+</button>
+      <button type="button" onclick="cambiarValor('arrozBlanco', -1)">−</button>
+      <input id="arrozBlanco" type="number" inputmode="numeric" />
+      <button type="button" onclick="cambiarValor('arrozBlanco', 1)">+</button>
     </div>
   </div>
 
   <div class="row">
-    <label>🌰 Frijoles</label>
+    <label for="frijoles">🌰 Frijoles</label>
     <div class="counter">
-      <button onclick="cambiarValor('frijoles', -1)">−</button>
-      <input id="frijoles" type="number">
-      <button onclick="cambiarValor('frijoles', 1)">+</button>
+      <button type="button" onclick="cambiarValor('frijoles', -1)">−</button>
+      <input id="frijoles" type="number" inputmode="numeric" />
+      <button type="button" onclick="cambiarValor('frijoles', 1)">+</button>
     </div>
   </div>
 
   <div class="row">
-    <label>🍝 Spaghetti</label>
+    <label for="spaghetti">🍝 Spaghetti</label>
     <div class="counter">
-      <button onclick="cambiarValor('spaghetti', -1)">−</button>
-      <input id="spaghetti" type="number">
-      <button onclick="cambiarValor('spaghetti', 1)">+</button>
+      <button type="button" onclick="cambiarValor('spaghetti', -1)">−</button>
+      <input id="spaghetti" type="number" inputmode="numeric" />
+      <button type="button" onclick="cambiarValor('spaghetti', 1)">+</button>
     </div>
   </div>
 
-  <!-- Botón de actualización -->
-  <button onclick="actualizar()">Actualización</button>
+  <button class="action" type="button" onclick="actualizar()">Actualización</button>
 
   <textarea id="resultado" readonly placeholder="Aquí aparecerá el resumen..."></textarea>
 
-  <!-- Botón final -->
-  <button onclick="generarTicket()">Generar ticket</button>
+  <button class="action" type="button" onclick="generarTicket()">Generar ticket</button>
 
   <div class="note">
     El texto se copia automáticamente al portapapeles
@@ -230,101 +238,151 @@
 </div>
 
 <script>
+  // ⚠️ Esto es barrera UX, no seguridad fuerte (backend aún es necesario si lo quieres “real”).
+  const PASSWORD = "123";
+  const DURACION_MS = 14 * 24 * 60 * 60 * 1000; // 14 días
 
-const PASSWORD = "123";
-const DURACION_MS = 14 * 24 * 60 * 60 * 1000; // 14 días
+  const el = (id) => document.getElementById(id);
 
-function estaDesbloqueado() {
-  const unlockTime = localStorage.getItem("irmaRiceUnlockTime");
-  if (!unlockTime) return false;
-
-  const ahora = Date.now();
-  return ahora - Number(unlockTime) < DURACION_MS;
-}
-
-function checkPassword() {
-  const input = document.getElementById("passwordInput");
-
-  if (input.value === PASSWORD) {
-    localStorage.setItem("irmaRiceUnlockTime", Date.now());
-    document.getElementById("lockOverlay").style.display = "none";
-  } else {
-    input.value = "";
-    alert("Contraseña incorrecta");
+  function estaDesbloqueado() {
+    const unlockTime = localStorage.getItem("irmaRiceUnlockTime");
+    if (!unlockTime) return false;
+    return Date.now() - Number(unlockTime) < DURACION_MS;
   }
-}
 
-// 🔑 Al cargar la página
-window.addEventListener("DOMContentLoaded", () => {
-  if (estaDesbloqueado()) {
-    document.getElementById("lockOverlay").style.display = "none";
+  function bloquearScroll(bloquear) {
+    document.body.style.overflow = bloquear ? "hidden" : "";
   }
-});
 
+  function checkPassword() {
+    const input = el("passwordInput");
+    if (input.value === PASSWORD) {
+      localStorage.setItem("irmaRiceUnlockTime", String(Date.now()));
+      el("lockOverlay").style.display = "none";
+      bloquearScroll(false);
+      // Lleva el foco al primer input útil
+      el("arrozRojo").focus();
+    } else {
+      input.value = "";
+      alert("Contraseña incorrecta");
+      input.focus();
+    }
+  }
 
-function cambiarValor(id, delta) {
-  const input = document.getElementById(id);
-  const actual = Number(input.value) || 0;
-  input.value = actual + delta;
-}
-
-function obtenerPayload() {
-  return {
-    arrozRojo: Number(arrozRojo.value) || 0,
-    arrozBlanco: Number(arrozBlanco.value) || 0,
-    frijoles: Number(frijoles.value) || 0,
-    spaghetti: Number(spaghetti.value) || 0
-  };
-}
-
-function mostrarTexto(texto) {
-  resultado.value = texto;
-  resultado.style.height = "auto";
-  resultado.style.height = resultado.scrollHeight + "px";
-  navigator.clipboard.writeText(texto);
-}
-
-async function actualizar() {
-  const payload = obtenerPayload();
-
-  try {
-    const res = await fetch("/api/actualizacion", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-
-    const data = await res.json();
-
-    if (data.texto) {
-      mostrarTexto(data.texto);
+  window.addEventListener("DOMContentLoaded", () => {
+    if (estaDesbloqueado()) {
+      el("lockOverlay").style.display = "none";
+      bloquearScroll(false);
+    } else {
+      bloquearScroll(true);
+      // foco al password
+      setTimeout(() => el("passwordInput")?.focus(), 0);
     }
 
-    limpiarInputs(); // 👈 aquí se limpian los textbox
+    // Enter para entrar
+    el("passwordInput").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") checkPassword();
+    });
+  });
 
-  } catch {
-    alert("Error al registrar la actualización");
+  function cambiarValor(id, delta) {
+    const input = el(id);
+    const actual = Number(input.value) || 0;
+    input.value = actual + delta;
   }
-}
 
+  function obtenerPayload() {
+    return {
+      arrozRojo: Number(el("arrozRojo").value) || 0,
+      arrozBlanco: Number(el("arrozBlanco").value) || 0,
+      frijoles: Number(el("frijoles").value) || 0,
+      spaghetti: Number(el("spaghetti").value) || 0
+    };
+  }
+
+  async function copiarAlPortapapeles(texto) {
+    try {
+      await navigator.clipboard.writeText(texto);
+      return true;
+    } catch {
+      // fallback viejo (por si clipboard falla)
+      try {
+        const ta = document.createElement("textarea");
+        ta.value = texto;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+        return true;
+      } catch {
+        return false;
+      }
+    }
+  }
+
+  async function mostrarTexto(texto) {
+    const out = el("resultado");
+    out.value = texto || "";
+    out.style.height = "auto";
+    out.style.height = out.scrollHeight + "px";
+    if (texto) await copiarAlPortapapeles(texto);
+  }
 
   function limpiarInputs() {
-  arrozRojo.value = "";
-  arrozBlanco.value = "";
-  frijoles.value = "";
-  spaghetti.value = "";
-}
-
-
-async function generarTicket() {
-  try {
-    const res = await fetch("/api/ticket", { method: "POST" });
-    const data = await res.json();
-    mostrarTexto(data.texto);
-  } catch {
-    alert("Error al generar el ticket");
+    el("arrozRojo").value = "";
+    el("arrozBlanco").value = "";
+    el("frijoles").value = "";
+    el("spaghetti").value = "";
   }
-}
+
+  async function actualizar() {
+    const payload = obtenerPayload();
+
+    try {
+      const res = await fetch("/api/actualizacion", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      // si el backend falló, mostrar error
+      if (!res.ok) {
+        const msg = await res.text().catch(() => "");
+        throw new Error(msg || "Error en servidor");
+      }
+
+      const data = await res.json();
+
+      if (data?.texto) {
+        await mostrarTexto(data.texto);
+      } else {
+        // si no hay texto, por lo menos limpia el textarea (opcional)
+        await mostrarTexto("");
+      }
+
+      limpiarInputs();
+    } catch (e) {
+      console.error(e);
+      alert("Error al registrar la actualización");
+    }
+  }
+
+  async function generarTicket() {
+    try {
+      const res = await fetch("/api/ticket", { method: "POST" });
+
+      if (!res.ok) {
+        const msg = await res.text().catch(() => "");
+        throw new Error(msg || "Error en servidor");
+      }
+
+      const data = await res.json();
+      await mostrarTexto(data?.texto || "");
+    } catch (e) {
+      console.error(e);
+      alert("Error al generar el ticket");
+    }
+  }
 </script>
 
 </body>
