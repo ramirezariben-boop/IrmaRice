@@ -38,24 +38,26 @@
       flex: 1;
     }
 
+    /* ===== CONTADOR (-  input  +) ===== */
+
 .counter {
   display: grid;
-  grid-template-columns: 32px 70px 32px; /* -  input  + */
+  grid-template-columns: 32px 70px 32px;
   align-items: center;
   gap: 6px;
 }
 
-
-input {
+.counter input {
   width: 70px;
   height: 32px;
   padding: 0 6px;
   font-size: 16px;
   text-align: right;
   box-sizing: border-box;
+  border: 2px solid #3a2f1c;
 }
 
-input[type="number"] {
+.counter input[type="number"] {
   appearance: none;
   -moz-appearance: textfield;
 }
@@ -71,6 +73,7 @@ input[type="number"] {
   font-weight: bold;
   border-radius: 4px;
   background: #e0c27a;
+  border: 2px solid transparent;
 }
 
 
@@ -228,7 +231,7 @@ input[type="number"] {
 
 <script>
 
-const PASSWORD = "1234";
+const PASSWORD = "123";
 const DURACION_MS = 14 * 24 * 60 * 60 * 1000; // 14 días
 
 function estaDesbloqueado() {
