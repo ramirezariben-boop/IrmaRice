@@ -1,11 +1,147 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>IrmaRice</title>
+  <meta charset="UTF-8" />
+  <title>IrmaRice · Registro diario</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9e4b7;
+      padding: 40px;
+      color: #3a2f1c;
+    }
+
+    .container {
+      max-width: 420px;
+      margin: auto;
+      background: #fff7e1;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    label {
+      font-weight: bold;
+    }
+
+    input {
+      width: 80px;
+      padding: 5px;
+      font-size: 16px;
+      text-align: right;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 15px;
+      padding: 12px;
+      background: #cfa45d;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #b98f4e;
+    }
+
+    textarea {
+      width: 100%;
+      margin-top: 15px;
+      padding: 10px;
+      font-size: 14px;
+      resize: none;
+      overflow: hidden;
+      min-height: 120px;
+    }
+
+    .note {
+      font-size: 12px;
+      text-align: center;
+      margin-top: 10px;
+      opacity: 0.7;
+    }
+  </style>
 </head>
+
 <body>
-  <h1>IrmaRice</h1>
-  <p>Proyecto inicial</p>
+
+<div class="container">
+  <h2>🍚 IrmaRice · Registro diario</h2>
+
+  <div class="row">
+    <label>Arroz rojo</label>
+    <input id="arrozRojo" type="number" min="0">
+  </div>
+
+  <div class="row">
+    <label>Arroz blanco</label>
+    <input id="arrozBlanco" type="number" min="0">
+  </div>
+
+  <div class="row">
+    <label>Frijoles</label>
+    <input id="frijoles" type="number" min="0">
+  </div>
+
+  <div class="row">
+    <label>Spaghetti</label>
+    <input id="spaghetti" type="number" min="0">
+  </div>
+
+  <button onclick="enviar()">Generar y guardar</button>
+
+  <textarea id="resultado" readonly placeholder="Aquí aparecerá el resumen..."></textarea>
+
+  <div class="note">
+    El texto se copia automáticamente al portapapeles
+  </div>
+</div>
+
+<script>
+async function enviar() {
+  const payload = {
+    arrozRojo: Number(arrozRojo.value) || 0,
+    arrozBlanco: Number(arrozBlanco.value) || 0,
+    frijoles: Number(frijoles.value) || 0,
+    spaghetti: Number(spaghetti.value) || 0
+  };
+
+  try {
+    const res = await fetch("/api/registro", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+
+    resultado.value = data.texto;
+    resultado.style.height = "auto";
+    resultado.style.height = resultado.scrollHeight + "px";
+
+    navigator.clipboard.writeText(data.texto);
+
+  } catch (e) {
+    alert("Error al conectar con el servidor");
+  }
+}
+</script>
+
 </body>
 </html>
