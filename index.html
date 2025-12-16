@@ -35,18 +35,39 @@
 
     label {
       font-weight: bold;
+      flex: 1;
+    }
+
+    .counter {
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
     input {
-      width: 80px;
+      width: 70px;
       padding: 5px;
       font-size: 16px;
       text-align: right;
     }
 
+    .counter button {
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 4px;
+      background: #e0c27a;
+    }
+
+    .counter button:hover {
+      background: #cfa45d;
+    }
+
     button {
       width: 100%;
-      margin-top: 15px;
+      margin-top: 12px;
       padding: 12px;
       background: #cfa45d;
       border: none;
@@ -86,27 +107,47 @@
 
   <div class="row">
     <label>Arroz rojo</label>
-    <input id="arrozRojo" type="number" min="0">
+    <div class="counter">
+      <button onclick="cambiarValor('arrozRojo', -1)">−</button>
+      <input id="arrozRojo" type="number">
+      <button onclick="cambiarValor('arrozRojo', 1)">+</button>
+    </div>
   </div>
 
   <div class="row">
     <label>Arroz blanco</label>
-    <input id="arrozBlanco" type="number" min="0">
+    <div class="counter">
+      <button onclick="cambiarValor('arrozBlanco', -1)">−</button>
+      <input id="arrozBlanco" type="number">
+      <button onclick="cambiarValor('arrozBlanco', 1)">+</button>
+    </div>
   </div>
 
   <div class="row">
     <label>Frijoles</label>
-    <input id="frijoles" type="number" min="0">
+    <div class="counter">
+      <button onclick="cambiarValor('frijoles', -1)">−</button>
+      <input id="frijoles" type="number">
+      <button onclick="cambiarValor('frijoles', 1)">+</button>
+    </div>
   </div>
 
   <div class="row">
     <label>Spaghetti</label>
-    <input id="spaghetti" type="number" min="0">
+    <div class="counter">
+      <button onclick="cambiarValor('spaghetti', -1)">−</button>
+      <input id="spaghetti" type="number">
+      <button onclick="cambiarValor('spaghetti', 1)">+</button>
+    </div>
   </div>
 
-  <button onclick="enviar()">Generar y guardar</button>
+  <!-- Botón de actualización -->
+  <button onclick="actualizar()">Actualización</button>
 
   <textarea id="resultado" readonly placeholder="Aquí aparecerá el resumen..."></textarea>
+
+  <!-- Botón final -->
+  <button onclick="generarTicket()">Generar ticket</button>
 
   <div class="note">
     El texto se copia automáticamente al portapapeles
@@ -114,31 +155,53 @@
 </div>
 
 <script>
-async function enviar() {
-  const payload = {
+function cambiarValor(id, delta) {
+  const input = document.getElementById(id);
+  const actual = Number(input.value) || 0;
+  input.value = actual + delta;
+}
+
+function obtenerPayload() {
+  return {
     arrozRojo: Number(arrozRojo.value) || 0,
     arrozBlanco: Number(arrozBlanco.value) || 0,
     frijoles: Number(frijoles.value) || 0,
     spaghetti: Number(spaghetti.value) || 0
   };
+}
+
+function mostrarTexto(texto) {
+  resultado.value = texto;
+  resultado.style.height = "auto";
+  resultado.style.height = resultado.scrollHeight + "px";
+  navigator.clipboard.writeText(texto);
+}
+
+async function actualizar() {
+  const payload = obtenerPayload();
 
   try {
-    const res = await fetch("/api/registro", {
+    const res = await fetch("/api/actualizacion", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
     });
 
     const data = await res.json();
+    mostrarTexto(data.texto);
 
-    resultado.value = data.texto;
-    resultado.style.height = "auto";
-    resultado.style.height = resultado.scrollHeight + "px";
+  } catch {
+    alert("Error al registrar la actualización");
+  }
+}
 
-    navigator.clipboard.writeText(data.texto);
-
-  } catch (e) {
-    alert("Error al conectar con el servidor");
+async function generarTicket() {
+  try {
+    const res = await fetch("/api/ticket", { method: "POST" });
+    const data = await res.json();
+    mostrarTexto(data.texto);
+  } catch {
+    alert("Error al generar el ticket");
   }
 }
 </script>
