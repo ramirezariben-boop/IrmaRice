@@ -38,11 +38,13 @@
       flex: 1;
     }
 
-    .counter {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
+.counter {
+  display: grid;
+  grid-template-columns: 32px 70px 32px; /* -  input  + */
+  align-items: center;
+  gap: 6px;
+}
+
 
 input {
   width: 70px;
@@ -50,12 +52,14 @@ input {
   padding: 0 6px;
   font-size: 16px;
   text-align: right;
+  box-sizing: border-box;
 }
 
-    input[type="number"] {
+input[type="number"] {
   appearance: none;
-  -moz-appearance: textfield;   /* Firefox */
+  -moz-appearance: textfield;
 }
+
 
     .counter {
   display: flex;
@@ -66,10 +70,10 @@ input {
 .counter button {
   width: 32px;
   height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 0;
-  display: flex;                 /* 👈 CLAVE */
-  align-items: center;           /* 👈 CLAVE */
-  justify-content: center;       /* 👈 CLAVE */
   font-size: 18px;
   font-weight: bold;
   border-radius: 4px;
