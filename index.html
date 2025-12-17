@@ -245,6 +245,10 @@
 </div>
 
 <script>
+
+const API_BASE = "https://irmarice.vercel.app";
+
+
   // ⚠️ Esto es barrera UX, no seguridad fuerte (backend aún es necesario si lo quieres “real”).
   const PASSWORD = "123";
   const DURACION_MS = 14 * 24 * 60 * 60 * 1000; // 14 días
@@ -399,11 +403,12 @@ async function mostrarTexto(texto) {
     const payload = obtenerPayload();
 
     try {
-      const res = await fetch("/api/actualizacion", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
+const res = await fetch(`${API_BASE}/api/actualizacion`, {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(payload)
+});
+
 
       // si el backend falló, mostrar error
       if (!res.ok) {
@@ -429,7 +434,10 @@ async function mostrarTexto(texto) {
 
   async function generarTicket() {
     try {
-      const res = await fetch("/api/ticket", { method: "POST" });
+      const res = await fetch(`${API_BASE}/api/ticket`, {
+  method: "POST"
+});
+
 
       if (!res.ok) {
         const msg = await res.text().catch(() => "");
