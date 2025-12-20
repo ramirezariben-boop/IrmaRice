@@ -1,230 +1,246 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta
-  name="viewport"
-  content="width=device-width, initial-scale=1.0"
-/>
-
-  <title>IrmaRice · Registro diario</title>
-
+  <meta charset="UTF-8">
+  <meta 
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover">
   <style>
-  html, body {
-  width: 100%;
-  max-width: 100%;
-  overflow-x: hidden;
+/* =========================
+   RESET / BASE
+   ========================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
- 
-    body {
-      font-family: Arial, sans-serif;
-      background: #f9e4b7;
-      margin: 0;
-      color: #3a2f1c;
-      
-	  }
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f9e4b7;
+  color: #3a2f1c;
+}
+
+/* =========================
+   PAGE / CONTAINER
+   ========================= */
 
 .page {
-  min-height: 100dvh;
+  min-height: 100vh;
+  padding: 12px;
   display: flex;
   justify-content: center;
-  padding: 16px;
-  background: #f9e4b7;
-  box-sizing: border-box;
 }
 
 .container {
   width: 100%;
-  max-width: 420px;
+  max-width: 460px;
   background: #fff7e1;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  padding: 14px;
+  border-radius: 14px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
 }
 
+/* =========================
+   TITLES
+   ========================= */
 
-    h2 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
+h2 {
+  margin: 0 0 12px;
+  font-size: 12px;       
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.2;
+}
 
+/* =========================
+   PRODUCT ROWS
+   ========================= */
+
+/* DESKTOP / TABLET */
 .row {
+  display: grid;
+  grid-template-columns: 1fr 170px; /* label | counter */
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+/* MOBILE ANDROID SAFE */
+@media (max-width: 480px) {
+  .row {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+}
+
+/* =========================
+   LABEL
+   ========================= */
+
+label {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 6px;
+  font-size: 10px;        /* ↓ antes 15 */
+  font-weight: 600;
+  line-height: 1;
+}
+
+/* =========================
+   COUNTER
+   ========================= */
+
+.counter {
+  display: grid;
+  grid-template-columns: 24px minmax(36px, 1fr) 24px;
+  gap: 6px;
+  width: 100%;
+  align-items: center;
+}
+
+.counter button {
+  width: 12px;
+  height: 12px;
+  font-size: 8px;
+  border-radius: 8px;
+  align-items: center;
+}
+
+.counter button:hover {
+  background: #cfa45d;
+}
+
+/* Input */
+.counter input {
+  width: 32px;
+  height: 16px;
+  min-width: 0;
+  font-size: 12px;              /* 👈 evita zoom Android */
+  text-align: center;
+  padding: 0 6px;
+  border: 2px solid #3a2f1c;
+  border-radius: 6px;
+  background: #fff;
+  outline: none;
+  align-items: center;
+}
+
+.counter input:focus {
+  box-shadow: 0 0 0 3px rgba(207,164,93,0.35);
+}
+
+.counter input[type="number"] {
+  appearance: none;
+  -moz-appearance: textfield;
+}
+
+/* =========================
+   ACTION BUTTONS
+   ========================= */
+
+button.action {
+  width: 100%;
+  margin-top: 12px;
+  padding: 6px;
+  font-size: 9px;
+  font-weight: bold;
+  border: none;
+  border-radius: 7px;
+  background: #cfa45d;
+  cursor: pointer;
+}
+
+button.action:hover {
+  background: #b98f4e;
+}
+
+/* =========================
+   TEXTAREA (RESUMEN)
+   ========================= */
+
+textarea {
+  width: 100%;
+  margin-top: 14px;
+  padding: 10px;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 4px;
+  line-height: 1;
+  min-height: 140px;
+  max-height: 160px;
+  min-width: 100px;
+  max-width: 120px;
+  resize: none;
+  border: 2px solid #3a2f1c;
+  border-radius: 12px;
+  background: #fff;
+  align: center;
+  overflow: hidden;
+}
+
+/* =========================
+   FOOT NOTE
+   ========================= */
+
+.note {
+  margin-top: 10px;
+  font-size: 8px;
+  text-align: center;
+  opacity: 0.7;
+}
+
+/* =========================
+   LOCK OVERLAY
+   ========================= */
+
+#lockOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.lockBox {
+  width: min(360px, 92vw);
+  background: #fff7e1;
+  padding: 24px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+
+.lockBox h3 {
   margin-bottom: 14px;
 }
 
-label {
-  font-weight: bold;
-  user-select: none;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  min-width: 120px;   /* 👈 clave */
-}
-
-
-
-    /* ===== CONTADOR (-  input  +) ===== */
-.counter {
-  flex: 1;                      /* 👈 ocupa el resto de la fila */
-  display: grid;
-  grid-template-columns: 36px 1fr 36px;
-  align-items: center;
-  gap: 6px;
-}
-
-
-.counter input {
+.lockBox input {
   width: 100%;
-  min-width: 60px;
-  height: 32px;
-  padding: 0 6px;
+  padding: 10px;
   font-size: 16px;
-  text-align: right;
-  box-sizing: border-box;
+  margin-bottom: 12px;
   border: 2px solid #3a2f1c;
-  background: #fff;
+  border-radius: 6px;
   outline: none;
 }
 
-
-    .counter input:focus {
-      box-shadow: 0 0 0 3px rgba(207,164,93,0.35);
-    }
-
-    .counter input[type="number"] {
-      appearance: none;
-      -moz-appearance: textfield;
-    }
-
-    .counter button {
-      width: 32px;
-      height: 32px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0;
-      font-size: 18px;
-      font-weight: bold;
-      border-radius: 4px;
-      background: #e0c27a;
-      border: 2px solid transparent;
-      cursor: pointer;
-      user-select: none;
-    }
-
-    .counter button:hover {
-      background: #cfa45d;
-    }
-
-    /* Botones grandes (actualización / ticket / login) */
-    button.action {
-      width: 100%;
-      margin-top: 12px;
-      padding: 12px;
-      background: #cfa45d;
-      border: none;
-      border-radius: 6px;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    button.action:hover {
-      background: #b98f4e;
-    }
-
-    textarea {
-      width: 100%;
-      margin-top: 15px;
-      padding: 10px;
-      font-size: 14px;
-      resize: none;
-      overflow: hidden;
-      min-height: 120px;
-      box-sizing: border-box;
-      border: 2px solid #3a2f1c;
-      background: #fff;
-    }
-
-    .note {
-      font-size: 12px;
-      text-align: center;
-      margin-top: 10px;
-      opacity: 0.7;
-    }
-
-    /* 🔒 Overlay de seguridad */
-    #lockOverlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.4);
-      backdrop-filter: blur(6px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-    }
-
-    /* Caja del login */
-    .lockBox {
-      width: min(360px, 92vw);
-      background: #fff7e1;
-      padding: 25px 30px;
-      border-radius: 10px;
-      text-align: center;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-      border: 2px solid rgba(58,47,28,0.25);
-    }
-
-    .lockBox h3 {
-      margin-bottom: 15px;
-    }
-
-    .lockBox input {
-      width: 100%;
-      padding: 10px;
-      font-size: 16px;
-      margin-bottom: 12px;
-      border: 2px solid #3a2f1c;
-      border-radius: 6px;
-      box-sizing: border-box;
-      outline: none;
-      background: #fff;
-    }
-
-    .lockBox input:focus {
-      box-shadow: 0 0 0 3px rgba(207,164,93,0.35);
-    }
-
-    .lockBox button {
-      width: 100%;
-    }
-
-#resultado {
-  font-family: "Courier New", Courier, monospace;
-  white-space: pre-wrap;
-  overflow: hidden;          /* 👈 NO scroll */
-  max-width: 100%;
+.lockBox input:focus {
+  box-shadow: 0 0 0 3px rgba(207,164,93,0.35);
 }
 
-
-
-@media (max-width: 360px) {
-  body {
-    padding: 12px;
-  }
-
-  label {
-    flex: 1 1 100%;
-  }
-
-  .row {
-    justify-content: flex-start;
-  }
+.lockBox button {
+  width: 100%;
 }
+
 
   </style>
 </head>
@@ -239,8 +255,6 @@ label {
     <button class="action" type="button" onclick="checkPassword()">Entrar</button>
   </div>
 </div>
-
-<body>
 
 <div class="page">
  <div class="container">
@@ -310,10 +324,6 @@ const API_BASE = "https://irmarice.vercel.app";
     const unlockTime = localStorage.getItem("irmaRiceUnlockTime");
     if (!unlockTime) return false;
     return Date.now() - Number(unlockTime) < DURACION_MS;
-  }
-
-  function bloquearScroll(bloquear) {
-    document.body.style.overflow = bloquear ? "hidden" : "";
   }
 
   function checkPassword() {

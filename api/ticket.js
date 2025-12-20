@@ -48,6 +48,15 @@ export default async function handler(req, res) {
 
     const t = rows[0];
 
+function lineaProducto(nombre, cantidad, subtotal) {
+  const colNombre = nombre.padEnd(12).slice(0, 12);
+  const colCantidad = ("x " + cantidad).padStart(5);
+  const colPrecio = ("$" + subtotal.toFixed(2)).padStart(8);
+
+  return colNombre + colCantidad + colPrecio;
+}
+
+
     // 🧮 Cálculos
     const subtotales = {
       arroz_rojo: t.arroz_rojo * PRECIOS.arroz_rojo,
@@ -75,28 +84,29 @@ export default async function handler(req, res) {
 
     if (t.arroz_rojo !== 0)
       lineas.push(
-        `Arroz rojo     x${String(t.arroz_rojo).padStart(2)}   $${subtotales.arroz_rojo.toFixed(2)}`
+        lineaProducto("Arroz rojo", t.arroz_rojo, subtotales.arroz_rojo)
       );
 
     if (t.arroz_blanco !== 0)
       lineas.push(
-        `Arroz blanco   x${String(t.arroz_blanco).padStart(2)}   $${subtotales.arroz_blanco.toFixed(2)}`
+        lineaProducto("Arroz blanco", t.arroz_blanco, subtotales.arroz_blanco)
       );
 
     if (t.frijoles !== 0)
       lineas.push(
-        `Frijoles       x${String(t.frijoles).padStart(2)}   $${subtotales.frijoles.toFixed(2)}`
+        lineaProducto("Frijoles", t.frijoles, subtotales.frijoles)
       );
 
     if (t.spaghetti !== 0)
       lineas.push(
-        `Spaghetti      x${String(t.spaghetti).padStart(2)}   $${subtotales.spaghetti.toFixed(2)}`
+        lineaProducto("Spaghetti", t.spaghetti, subtotales.spaghetti)
       );
 
-    lineas.push("--------------------------");
-    lineas.push(
-      `TOTAL                $${total.toFixed(2)}`
-    );
+    lineas.push("-".repeat(25));
+lineas.push(
+  "TOTAL".padEnd(17) + ("$" + total.toFixed(2)).padStart(8)
+);
+
 
     const texto = lineas.join("\n");
 
