@@ -50,13 +50,10 @@
 
 .row {
   display: flex;
-  flex-direction: column;      /* 👈 vertical SIEMPRE */
-  align-items: stretch;
-  gap: 6px;
+  align-items: center;
+  gap: 12px;
   margin-bottom: 14px;
 }
-
-
 
 label {
   font-weight: bold;
@@ -64,17 +61,20 @@ label {
   display: flex;
   align-items: center;
   gap: 6px;
+  min-width: 120px;   /* 👈 clave */
 }
+
 
 
     /* ===== CONTADOR (-  input  +) ===== */
 .counter {
-  width: 100%;
+  flex: 1;                      /* 👈 ocupa el resto de la fila */
   display: grid;
-  grid-template-columns: 32px 1fr 36px;
+  grid-template-columns: 36px 1fr 36px;
   align-items: center;
   gap: 6px;
 }
+
 
 .counter input {
   width: 100%;
