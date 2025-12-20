@@ -106,13 +106,13 @@ const ANCHO = 25; // 12 + 5 + 8
 
 function lineaTotal(total) {
   const colNombre = "TOTAL".padEnd(12);
-  const colCantidad = "".padEnd(5);
+  const colCantidad = "".padEnd(4);
   const colPrecio = ("$" + total.toFixed(2)).padStart(8);
 
   return colNombre + colCantidad + colPrecio;
 }
 
-lineas.push("-".repeat(25));
+lineas.push("-".repeat(24));
 lineas.push(lineaTotal(total));
 
     const texto = lineas.join("\n");
