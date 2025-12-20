@@ -48,29 +48,32 @@
       margin-bottom: 20px;
     }
 
-    .row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 12px;
-      flex-wrap: wrap;        /* 👈 clave */
-    }
+.row {
+  display: flex;
+  flex-direction: column;      /* 👈 vertical SIEMPRE */
+  align-items: stretch;
+  gap: 6px;
+  margin-bottom: 14px;
+}
 
 
-    label {
-      font-weight: bold;
-      flex: 1 1 140px;  
-      user-select: none;
-    }
+
+label {
+  font-weight: bold;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 
     /* ===== CONTADOR (-  input  +) ===== */
 .counter {
+  width: 100%;
   display: grid;
-  grid-template-columns: 32px minmax(60px, 1fr) 32px;
+  grid-template-columns: 32px 1fr 36px;
   align-items: center;
   gap: 6px;
-  flex-shrink: 0;
 }
 
 .counter input {
