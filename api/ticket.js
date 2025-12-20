@@ -104,7 +104,7 @@ function lineaProducto(nombre, cantidad, subtotal) {
 
     lineas.push("-".repeat(25));
 lineas.push(
-  "TOTAL".padEnd(17) + ("$" + total.toFixed(2)).padStart(8)
+  "TOTAL".padEnd(16) + ("$" + total.toFixed(2)).padStart(8)
 );
 
 
