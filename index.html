@@ -5,6 +5,10 @@
   <meta 
     name="viewport"
     content="width=device-width, initial-scale=1, viewport-fit=cover">
+	
+	<link rel="icon" href="/favicon.png" type="image/png">
+
+	
   <style>
 /* =========================
    RESET / BASE
@@ -65,11 +69,11 @@ h2 {
 
 /* DESKTOP / TABLET */
 .row {
-  display: grid;
-  grid-template-columns: 1fr 170px; /* label | counter */
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;   /* centra todo en X */
+  gap: 6px;
+  margin-bottom: 16px;
 }
 
 /* MOBILE ANDROID SAFE */
@@ -88,10 +92,12 @@ label {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 10px;        /* ↓ antes 15 */
+  font-size: 10px;
   font-weight: 600;
   line-height: 1;
+  margin-bottom: 6px;   /* 👈 esto sí existe */
 }
+
 
 /* =========================
    COUNTER
@@ -99,19 +105,30 @@ label {
 
 .counter {
   display: grid;
-  grid-template-columns: 24px minmax(36px, 1fr) 24px;
-  gap: 6px;
-  width: 100%;
+  grid-template-columns: 14px 32px 14px;
+  gap: 2px;
+
+  width: 100%;                 /* 🔑 clave */
+  justify-content: center;     /* 🔑 centra el grupo */
   align-items: center;
 }
 
 .counter button {
   width: 12px;
   height: 12px;
+
+  display: flex;              /* 👈 clave */
+  align-items: center;        /* centra vertical */
+  justify-content: center;    /* centra horizontal */
+  justify-self: start;
+
   font-size: 8px;
-  border-radius: 8px;
-  align-items: center;
+  line-height: 1;             /* evita desplazamientos raros */
+  border-radius: 6px;
+
+  padding: 0;                 /* MUY importante */
 }
+
 
 .counter button:hover {
   background: #cfa45d;
@@ -122,7 +139,7 @@ label {
   width: 32px;
   height: 16px;
   min-width: 0;
-  font-size: 10px;              /* 👈 evita zoom Android */
+  font-size: 8px;              /* 👈 evita zoom Android */
   text-align: center;
   padding: 0 6px;
   border: 2px solid #3a2f1c;
@@ -144,17 +161,22 @@ label {
 /* =========================
    ACTION BUTTONS
    ========================= */
+.center-wrap {
+  display: flex;
+  justify-content: center;
+}
 
 button.action {
-  width: 100%;
-  margin-top: 12px;
-  padding: 6px;
-  font-size: 9px;
-  font-weight: bold;
+  width: 60%;
+  margin: 10px auto;
+  padding: 3px 4px;
+  font-size: 6px;
+  font-weight: semi-bold;
   border: none;
   border-radius: 7px;
   background: #cfa45d;
   cursor: pointer;
+  align: center;
 }
 
 button.action:hover {
@@ -164,26 +186,38 @@ button.action:hover {
 /* =========================
    TEXTAREA (RESUMEN)
    ========================= */
+   
+.fullbleed {
+  width: calc(100% + 28px);   /* padding izquierdo + derecho del container */
+  margin-left: -14px;
+  margin-right: -14px;
+}
 
-textarea {
+
+textarea#resultado {
   width: 100%;
-  display: block;
-  margin-top: 14px;
-  margin: 7px auto 0 auto; 
-  padding: 10px;
+  max-width: 100%;
+  box-sizing: border-box;   /* 🔑 clave */
+
+  margin: 10px 0;           /* solo vertical */
+  padding: 6px;
+
   font-family: "Courier New", Courier, monospace;
-  font-size: 6px;
-  line-height: 1;
-  min-height: 60px;
-  max-height: 80px;
+  font-size: 5px;           /* puedes subir a 6 sin romper */
+  line-height: 1.25;
+
+  min-height: 80px;
+  max-height: 160px;
+
   resize: none;
   border: 2px solid #3a2f1c;
-  border-radius: 12px;
+  border-radius: 0px;
   background: #fff;
-  align-items: center;
+
   white-space: pre;
   overflow: auto;
 }
+
 
 /* =========================
    FOOT NOTE
@@ -259,7 +293,7 @@ textarea {
 
 <div class="page">
  <div class="container">
-  <h2>🍚 IrmaRice · Registro diario</h2>
+  <h2>🍚 IrmaRice </h2>
 
   <div class="row">
     <label for="arrozRojo">🍘 Arroz rojo</label>
@@ -298,11 +332,17 @@ textarea {
     </div>
   </div>
 
+<div class="center-wrap">
   <button class="action" type="button" onclick="actualizar()">Actualización</button>
+</div>
 
+<div class="fullbleed">
   <textarea id="resultado" readonly placeholder="Aquí aparecerá el resumen..."></textarea>
+</div>
 
+<div class="center-wrap">
   <button class="action" type="button" onclick="generarTicket()">Generar ticket</button>
+</div>
 
   <div class="note">
     El texto se copia automáticamente al portapapeles
@@ -432,7 +472,7 @@ if (l.startsWith("TOTAL")) {
   const precio = l.slice(l.lastIndexOf("$") + 1);
   return (
     "TOTAL".padEnd(ancho - precio.length - 2) +
-    "$ " +
+    "$" +
     precio
   );
 }
