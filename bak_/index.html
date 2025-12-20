@@ -2,46 +2,25 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta
-  name="viewport"
-  content="width=device-width, initial-scale=1.0"
-/>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>IrmaRice · Registro diario</title>
 
   <style>
-  html, body {
-  width: 100%;
-  max-width: 100%;
-  overflow-x: hidden;
-}
- 
     body {
       font-family: Arial, sans-serif;
       background: #f9e4b7;
-      margin: 0;
+      padding: 40px;
       color: #3a2f1c;
-      
-	  }
+    }
 
-.page {
-  min-height: 100dvh;
-  display: flex;
-  justify-content: center;
-  padding: 16px;
-  background: #f9e4b7;
-  box-sizing: border-box;
-}
-
-.container {
-  width: 100%;
-  max-width: 420px;
-  background: #fff7e1;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-}
-
+    .container {
+      max-width: 420px;
+      margin: auto;
+      background: #fff7e1;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
 
     h2 {
       text-align: center;
@@ -50,42 +29,37 @@
 
     .row {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      gap: 10px;
+      align-items: center;
       margin-bottom: 12px;
-      flex-wrap: wrap;        /* 👈 clave */
+      gap: 10px;
     }
-
 
     label {
       font-weight: bold;
-      flex: 1 1 140px;  
+      flex: 1;
       user-select: none;
     }
 
     /* ===== CONTADOR (-  input  +) ===== */
-.counter {
-  display: grid;
-  grid-template-columns: 32px minmax(60px, 1fr) 32px;
-  align-items: center;
-  gap: 6px;
-  flex-shrink: 0;
-}
+    .counter {
+      display: grid;
+      grid-template-columns: 32px 70px 32px;
+      align-items: center;
+      gap: 6px;
+    }
 
-.counter input {
-  width: 100%;
-  min-width: 60px;
-  height: 32px;
-  padding: 0 6px;
-  font-size: 16px;
-  text-align: right;
-  box-sizing: border-box;
-  border: 2px solid #3a2f1c;
-  background: #fff;
-  outline: none;
-}
-
+    .counter input {
+      width: 70px;
+      height: 32px;
+      padding: 0 6px;
+      font-size: 16px;
+      text-align: right;
+      box-sizing: border-box;
+      border: 2px solid #3a2f1c;
+      background: #fff;
+      outline: none;
+    }
 
     .counter input:focus {
       box-shadow: 0 0 0 3px rgba(207,164,93,0.35);
@@ -202,26 +176,9 @@
 
 #resultado {
   font-family: "Courier New", Courier, monospace;
-  white-space: pre-wrap;
-  overflow: hidden;          /* 👈 NO scroll */
-  max-width: 100%;
+  white-space: pre;
 }
 
-
-
-@media (max-width: 360px) {
-  body {
-    padding: 12px;
-  }
-
-  label {
-    flex: 1 1 100%;
-  }
-
-  .row {
-    justify-content: flex-start;
-  }
-}
 
   </style>
 </head>
@@ -237,10 +194,7 @@
   </div>
 </div>
 
-<body>
-
-<div class="page">
- <div class="container">
+<div class="container">
   <h2>🍚 IrmaRice · Registro diario</h2>
 
   <div class="row">
@@ -251,7 +205,6 @@
       <button type="button" onclick="cambiarValor('arrozRojo', 1)">+</button>
     </div>
   </div>
-
 
   <div class="row">
     <label for="arrozBlanco">🍚 Arroz blanco</label>
@@ -291,7 +244,6 @@
   </div>
 </div>
 
-</body>
 <script>
 
 const API_BASE = "https://irmarice.vercel.app";
