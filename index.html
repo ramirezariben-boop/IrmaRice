@@ -299,17 +299,16 @@ textarea#resultado {
     <label for="arrozRojo">🍘 Arroz rojo</label>
     <div class="counter">
       <button type="button" onclick="cambiarValor('arrozRojo', -1)">−</button>
-      <input id="arrozRojo" type="number" inputmode="numeric" />
+      <input id="arrozRojo" type="number" inputmode="numeric" step="1" />
       <button type="button" onclick="cambiarValor('arrozRojo', 1)">+</button>
     </div>
   </div>
-
 
   <div class="row">
     <label for="arrozBlanco">🍚 Arroz blanco</label>
     <div class="counter">
       <button type="button" onclick="cambiarValor('arrozBlanco', -1)">−</button>
-      <input id="arrozBlanco" type="number" inputmode="numeric" />
+      <input id="arrozBlanco" type="number" inputmode="numeric" step="1" />
       <button type="button" onclick="cambiarValor('arrozBlanco', 1)">+</button>
     </div>
   </div>
@@ -318,7 +317,7 @@ textarea#resultado {
     <label for="frijoles">🌰 Frijoles</label>
     <div class="counter">
       <button type="button" onclick="cambiarValor('frijoles', -1)">−</button>
-      <input id="frijoles" type="number" inputmode="numeric" />
+      <input id="frijoles" type="number" inputmode="numeric" step="1" />
       <button type="button" onclick="cambiarValor('frijoles', 1)">+</button>
     </div>
   </div>
@@ -327,7 +326,7 @@ textarea#resultado {
     <label for="spaghetti">🍝 Spaghetti</label>
     <div class="counter">
       <button type="button" onclick="cambiarValor('spaghetti', -1)">−</button>
-      <input id="spaghetti" type="number" inputmode="numeric" />
+      <input id="spaghetti" type="number" inputmode="numeric" step="1" />
       <button type="button" onclick="cambiarValor('spaghetti', 1)">+</button>
     </div>
   </div>
@@ -352,6 +351,8 @@ textarea#resultado {
 </body>
 <script>
 
+let actualizacionEnCurso = false;
+
 const API_BASE = "https://irmarice.vercel.app";
 
 
@@ -360,6 +361,14 @@ const API_BASE = "https://irmarice.vercel.app";
   const DURACION_MS = 14 * 24 * 60 * 60 * 1000; // 14 días
 
   const el = (id) => document.getElementById(id);
+  
+  const btnActualizar = document.querySelector(
+  'button[onclick="actualizar()"]'
+);
+
+function bloquearScroll(bloquear) {
+  document.body.style.overflow = bloquear ? "hidden" : "";
+}
 
   function estaDesbloqueado() {
     const unlockTime = localStorage.getItem("irmaRiceUnlockTime");
@@ -403,6 +412,10 @@ const API_BASE = "https://irmarice.vercel.app";
     const actual = Number(input.value) || 0;
     input.value = actual + delta;
   }
+
+function payloadTieneDatos(payload) {
+  return Object.values(payload).some(v => v !== 0);
+}
 
   function obtenerPayload() {
     return {
@@ -501,38 +514,50 @@ async function mostrarTexto(texto) {
     el("spaghetti").value = "";
   }
 
-  async function actualizar() {
-    const payload = obtenerPayload();
+async function actualizar() {
+  if (actualizacionEnCurso) return; // 🔒 evita doble click
 
-    try {
-const res = await fetch(`${API_BASE}/api/actualizacion`, {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify(payload)
-});
+  const payload = obtenerPayload();
 
-
-      // si el backend falló, mostrar error
-      if (!res.ok) {
-        const msg = await res.text().catch(() => "");
-        throw new Error(msg || "Error en servidor");
-      }
-
-      const data = await res.json();
-
-      if (data?.texto) {
-        await mostrarTexto(data.texto);
-      } else {
-        // si no hay texto, por lo menos limpia el textarea (opcional)
-        await mostrarTexto("");
-      }
-
-      limpiarInputs();
-    } catch (e) {
-      console.error(e);
-      alert("Error al registrar la actualización");
-    }
+  // ❌ No hacer NADA si todo es 0
+  if (!payloadTieneDatos(payload)) {
+    console.log("⏭️ Actualización vacía ignorada");
+    return;
   }
+
+  actualizacionEnCurso = true;
+  btnActualizar.disabled = true; 
+
+  try {
+    const res = await fetch(`${API_BASE}/api/actualizacion`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) {
+      const msg = await res.text().catch(() => "");
+      throw new Error(msg || "Error en servidor");
+    }
+
+    const data = await res.json();
+
+    if (data?.texto) {
+      await mostrarTexto(data.texto);
+    } else {
+      await mostrarTexto("");
+    }
+
+    limpiarInputs(); // ✅ solo aquí
+  } catch (e) {
+    console.error(e);
+    alert("Error al registrar la actualización");
+  } finally {
+    actualizacionEnCurso = false; // 🔓 libera lock
+	btnActualizar.disabled = false;
+  }
+}
+
 
   async function generarTicket() {
     try {

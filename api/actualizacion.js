@@ -12,7 +12,6 @@ function formatearCantidad(cantidad, singular, plural) {
 }
 
 
-
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Método no permitido" });
@@ -25,7 +24,18 @@ export default async function handler(req, res) {
     spaghetti = 0
   } = req.body;
 
-  // 🕒 Fecha en horario México
+  const todoCero =
+    arrozRojo === 0 &&
+    arrozBlanco === 0 &&
+    frijoles === 0 &&
+    spaghetti === 0;
+
+  // 🛑 DEFENSA FINAL
+  if (todoCero) {
+    return res.status(200).json({ texto: "" });
+  }
+
+  // 🕒 Fecha MX
   const fechaMX = new Date(
     new Date().toLocaleString("en-US", {
       timeZone: "America/Mexico_City"
@@ -33,6 +43,26 @@ export default async function handler(req, res) {
   );
 
   try {
+
+// 🔁 IDEMPOTENCIA: evitar duplicados recientes
+const duplicado = await pool.query(
+  `
+  SELECT 1
+  FROM actualizaciones
+  WHERE fecha > $5 - INTERVAL '5 seconds'
+    AND arroz_rojo = $1
+    AND arroz_blanco = $2
+    AND frijoles = $3
+    AND spaghetti = $4
+  LIMIT 1
+  `,
+  [arrozRojo, arrozBlanco, frijoles, spaghetti, fechaMX]
+);
+
+if (duplicado.rowCount > 0) {
+  return res.status(200).json({ texto: "" });
+}
+
     await pool.query(
       `
       INSERT INTO actualizaciones
@@ -42,7 +72,6 @@ export default async function handler(req, res) {
       [fechaMX, arrozRojo, arrozBlanco, frijoles, spaghetti]
     );
 
-    // 🧠 Detectar si hay alguna ENTREGA (valor positivo)
     const hayEntrega =
       arrozRojo > 0 ||
       arrozBlanco > 0 ||
@@ -55,50 +84,43 @@ export default async function handler(req, res) {
       frijoles < 0 ||
       spaghetti < 0;
 
-// 🟢 CASO 1: ENTREGA
-if (hayEntrega) {
-  const partes = [];
+    // 🟢 ENTREGA
+    if (hayEntrega) {
+      const partes = [];
 
-  if (arrozBlanco > 0)
-    partes.push(formatearCantidad(arrozBlanco, "blanco", "blancos"));
+      if (arrozBlanco > 0)
+        partes.push(formatearCantidad(arrozBlanco, "blanco", "blancos"));
+      if (arrozRojo > 0)
+        partes.push(formatearCantidad(arrozRojo, "rojo", "rojos"));
+      if (frijoles > 0)
+        partes.push(formatearCantidad(frijoles, "frijol", "frijoles"));
+      if (spaghetti > 0)
+        partes.push(formatearCantidad(spaghetti, "spaghetti", "spaghettis"));
 
-  if (arrozRojo > 0)
-    partes.push(formatearCantidad(arrozRojo, "rojo", "rojos"));
+      return res.status(200).json({
+        texto: `Entregué ${partes.join(", ")}`
+      });
+    }
 
-  if (frijoles > 0)
-    partes.push(formatearCantidad(frijoles, "frijol", "frijoles"));
+    // 🟠 SOBRANTE
+    if (haySobrante) {
+      const partes = [];
 
-  if (spaghetti > 0)
-    partes.push(formatearCantidad(spaghetti, "spaghetti", "spaghettis"));
+      if (arrozBlanco < 0)
+        partes.push(formatearCantidad(arrozBlanco, "blanco", "blancos"));
+      if (arrozRojo < 0)
+        partes.push(formatearCantidad(arrozRojo, "rojo", "rojos"));
+      if (frijoles < 0)
+        partes.push(formatearCantidad(frijoles, "frijol", "frijoles"));
+      if (spaghetti < 0)
+        partes.push(formatearCantidad(spaghetti, "spaghetti", "spaghettis"));
 
-  return res.status(200).json({
-    texto: `Entregué ${partes.join(", ")}`
-  });
-}
+      return res.status(200).json({
+        texto: `Sobró ${partes.join(", ")}`
+      });
+    }
 
-// 🟠 CASO 2: SOBRANTE (solo negativos)
-if (haySobrante) {
-  const partes = [];
-
-  if (arrozBlanco < 0)
-    partes.push(formatearCantidad(arrozBlanco, "blanco", "blancos"));
-
-  if (arrozRojo < 0)
-    partes.push(formatearCantidad(arrozRojo, "rojo", "rojos"));
-
-  if (frijoles < 0)
-    partes.push(formatearCantidad(frijoles, "frijol", "frijoles"));
-
-  if (spaghetti < 0)
-    partes.push(formatearCantidad(spaghetti, "spaghetti", "spaghettis"));
-
-  return res.status(200).json({
-    texto: `Sobró ${partes.join(", ")}`
-  });
-}
-
-// ⚪ CASO 3: todo es 0
-return res.status(200).json({ texto: "" });
+    return res.status(200).json({ texto: "" });
 
   } catch (error) {
     console.error("Error en /api/actualizacion:", error);
