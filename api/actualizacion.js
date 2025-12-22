@@ -56,7 +56,7 @@ const duplicado = await pool.query(
     AND spaghetti = $4
   LIMIT 1
   `,
-  [arrozRojo, arrozBlanco, frijoles, spaghetti, fechaMX]
+  [arrozRojo, arrozBlanco, frijoles, spaghetti]
 );
 
 if (duplicado.rowCount > 0) {
