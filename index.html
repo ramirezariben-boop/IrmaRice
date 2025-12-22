@@ -8,12 +8,10 @@
 	
 	<link rel="icon" href="/favicon.png" type="image/png">
 
-	
   <style>
 /* =========================
    RESET / BASE
    ========================= */
-
 *,
 *::before,
 *::after {
@@ -218,7 +216,6 @@ textarea#resultado {
   overflow: auto;
 }
 
-
 /* =========================
    FOOT NOTE
    ========================= */
@@ -275,7 +272,6 @@ textarea#resultado {
 .lockBox button {
   width: 100%;
 }
-
 
   </style>
 </head>
@@ -490,7 +486,6 @@ if (l.startsWith("TOTAL")) {
   );
 }
 
-
     return l;
   }).join("\n");
 }
@@ -558,13 +553,11 @@ async function actualizar() {
   }
 }
 
-
   async function generarTicket() {
     try {
       const res = await fetch(`${API_BASE}/api/ticket`, {
   method: "POST"
 });
-
 
       if (!res.ok) {
         const msg = await res.text().catch(() => "");
@@ -579,6 +572,5 @@ async function actualizar() {
     }
   }
 </script>
-
 </body>
 </html>

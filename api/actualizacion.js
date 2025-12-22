@@ -49,7 +49,7 @@ const duplicado = await pool.query(
   `
   SELECT 1
   FROM actualizaciones
-  WHERE fecha > $5 - INTERVAL '5 seconds'
+  WHERE fecha > NOW() - INTERVAL '5 seconds'
     AND arroz_rojo = $1
     AND arroz_blanco = $2
     AND frijoles = $3
