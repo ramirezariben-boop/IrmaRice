@@ -128,4 +128,5 @@ if (duplicado.rowCount > 0) {
     error: "Error al guardar la actualización",
     detalle: error.message
   });
+ }
 }
