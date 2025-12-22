@@ -123,7 +123,9 @@ if (duplicado.rowCount > 0) {
     return res.status(200).json({ texto: "" });
 
   } catch (error) {
-    console.error("Error en /api/actualizacion:", error);
-    return res.status(500).json({ error: "Error al guardar la actualización" });
-  }
+  console.error("🔥 ERROR REAL:", error);
+  return res.status(500).json({
+    error: "Error al guardar la actualización",
+    detalle: error.message
+  });
 }
