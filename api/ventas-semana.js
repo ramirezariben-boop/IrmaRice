@@ -13,7 +13,10 @@ const PRECIOS = {
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false },
+  prepareThreshold: 0,
+  statement_timeout: 5000,
 });
+
 
 async function ventasSemana() {
   const result = await pool.query(`
