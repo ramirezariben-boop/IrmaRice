@@ -2,8 +2,9 @@ import { Pool } from "pg";
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  prepareThreshold: 0,        // 🔑 evita prepared statements
-  statement_timeout: 5000,    // ⏱️ evita queries colgadas
+  max: 1,              // 🔑 CLAVE
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 2000,
 });
 
 
