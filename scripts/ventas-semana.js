@@ -12,12 +12,11 @@ const PRECIOS = {
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  max: 1,                    // 🔑 SOLO 1 conexión
-  idleTimeoutMillis: 30000,  // 🔑 se libera rápido
+  max: 1,
+  idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
+  prepareThreshold: 0,
 });
-
-
 
 async function ventasSemana() {
   const result = await pool.query(`

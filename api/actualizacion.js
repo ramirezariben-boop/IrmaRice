@@ -2,11 +2,11 @@ import { Pool } from "pg";
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  max: 1,              // 🔑 CLAVE
+  max: 1,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
+  prepareThreshold: 0,
 });
-
 
 function formatearCantidad(cantidad, singular, plural) {
   const abs = Math.abs(cantidad);
